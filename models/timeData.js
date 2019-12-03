@@ -23,7 +23,8 @@ class Time {
   static async getById(e_id) {
     try {
       const response = await db.any(
-        `select * from time_punch where eeid = ${e_id}`
+        `SELECT id, starttime, endtime, round(cast(extract(minutes from hours)/60 + extract(hours from hours) as numeric),2) as hours 
+        From time_punch WHERE eeid = $1 and starttime > '2019-10-21 00:00:00' ORDER BY ID;`, [e_id]
       );
       return response;
     } catch (err) {
