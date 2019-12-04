@@ -28,6 +28,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors(corsOptions));
 
 app.use("/users", usersRouter);
-app.use("/", timeRouter);
+app.use("/time", timeRouter);
 
 module.exports = app;

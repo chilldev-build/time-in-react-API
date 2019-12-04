@@ -10,16 +10,6 @@ class Time {
     this.active = active;
   }
 
-  static async getAll() {
-    try {
-      const response = await db.any(`select * from time_punch;`);
-      console.log(response);
-      return response;
-    } catch (err) {
-      return err.message;
-    }
-  }
-
   static async getById(e_id) {
     try {
       const response = await db.any(
@@ -32,35 +22,42 @@ class Time {
     }
   }
 
-  static async removeEntry(p_id) {
+  async addEndTime(e_id) {
+    console.log("this is endtime");
     try {
-      const response = await db.result(`delete from posts where id = ${p_id}`);
+      const response = await db.result(
+        `UPDATE time_punch SET endtime = '${this.endtime}' 
+            WHERE id = (select id from time_punch where eeid = $1 
+            and endtime isnull and starttime >
+            '2019-10-25 12:15:00')
+             RETURNING endtime;`,
+        [e_id]
+      );
       return response;
     } catch (err) {
       return err.message;
     }
   }
 
-  static async addEntry(title, author_id, content) {
-    const query = `INSERT INTO posts (title, author_id, content) VALUES ('${title}', ${author_id}, '${content}')`;
-
+  static async addHours(e_id) {
     try {
-      const response = await db.result(query);
+      const response = await db.result(
+        `
+            update time_punch set hours = (select endtime-starttime as hours from time_punch 
+            where id =  (select max(id) from time_punch where eeid =$1)) where id = (select max(id) from
+            time_punch where eeid = $2) RETURNING ID;`,
+        [e_id, e_id]
+      );
+      console.log(response);
       return response;
     } catch (err) {
       return err.message;
     }
   }
 
-  static async updateEntry(id, column, content) {
-    const query = `UPDATE posts SET ${column} = ${content} WHERE id = '${id}'`;
-    try {
-      const response = await db.result(query);
-      return response;
-    } catch (err) {
-      return err.message;
-    }
-  }
-}
+
+};
+
+
 
 module.exports = Time;
