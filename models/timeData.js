@@ -22,6 +22,20 @@ class Time {
     }
   }
 
+  async addStartTime(e_id) {
+    try {
+      const response = await db.result(
+        `
+            insert into time_punch (eeid, starttime) Values ( $1 , '${this.starttime}') RETURNING starttime;`,
+        [e_id]
+      );
+      console.log(response);
+      return response;
+    } catch (err) {
+      return err.message;
+    }
+  }
+
   async addEndTime(e_id) {
     console.log("this is endtime");
     try {

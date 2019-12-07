@@ -47,16 +47,19 @@ router.put("/clockout/:ee_id?", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
-  let { starttime } = req.body;
+//Clock in
+router.post("/clockin/:ee_id", async (req, res) => {
+  const eeId = req.params.ee_id;
   starttime = moment().format("YYYY-M-D  H:m:ss")
-  const time_Instance = new timeModel(null, null, starttime, null, null);
-  const timeIn = await time_Instance.addStartTime(req.session.t_id);
+  const time_Instance = new TimeModel(null, null, starttime, null, null);
+  const timeIn = await time_Instance.addStartTime(eeId);
+  console.log('clockin route was called')
+  console.log('timein:', timeIn)
 
-  if (timeIn.rowCount !== 1) {
-    res.sendStatus(500);
+  if (timeIn.rowCount === 1) {
+    res.status(200).json(timeIn);
   } else {
-    res.redirect("/timesheet/timesheet");
+    res.send(`Could not update ${eeId}`).status(409);
   }
 });
 
