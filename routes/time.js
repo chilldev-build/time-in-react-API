@@ -32,10 +32,17 @@ router.get("/:ee_id?", async (req, res) => {
   res.json(theTime).status(200);
 });
 
+// Read Years from calendar
+router.get("/years/:ee_id?", async (req, res) => {
+  const eeId = req.params.ee_id;
+  const theYears = await TimeModel.getYears(eeId);
+  res.json(theYears).status(200);
+});
+
 // Clock out
 router.put("/clockout/:ee_id?", async (req, res) => {
   const eeId = req.params.ee_id;
-  endtime = moment().format("YYYY-M-D  H:m:ss")
+  endtime = moment().format("YYYY-M-D  H:m")
   console.log("this is the endtime", endtime);
   const time_InstanceOut = new TimeModel(null, null, null, endtime, null);
   const timeOut = await time_InstanceOut.addEndTime(eeId);
@@ -50,7 +57,7 @@ router.put("/clockout/:ee_id?", async (req, res) => {
 //Clock in
 router.post("/clockin/:ee_id", async (req, res) => {
   const eeId = req.params.ee_id;
-  starttime = moment().format("YYYY-M-D  H:m:ss")
+  starttime = moment().format("YYYY-M-D  H:m")
   const time_Instance = new TimeModel(null, null, starttime, null, null);
   const timeIn = await time_Instance.addStartTime(eeId);
   console.log('clockin route was called')
@@ -66,7 +73,7 @@ router.post("/clockin/:ee_id", async (req, res) => {
 router.post("/add_timeOut", async (req, res) => {
   let { endtime } = req.body;
   console.log("this is the endtime", endtime);
-  endtime = moment().format("YYYY-M-D  H:m:ss")
+  endtime = moment().format("YYYY-M-D  H:m")
   const time_InstanceOut = new timeModel(null, null, null, endtime, null);
   const timeOut = await time_InstanceOut.addEndTime(req.session.t_id);
   const hoursData = await timeModel.addHours(req.session.t_id);

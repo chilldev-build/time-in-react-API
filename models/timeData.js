@@ -69,6 +69,19 @@ class Time {
     }
   }
 
+  static async getYears(e_id) {
+    try {
+      const response = await db.any(
+        `
+        SELECT DISTINCT cast(EXTRACT(year FROM period_end) AS numeric) AS year FROM calendar WHERE co_cid = (SELECT co_cid FROM employee WHERE id = $1) ORDER BY year;`,
+        [e_id]
+      );
+      console.log(response);
+      return response;
+    } catch (err) {
+      return err.message;
+    }
+  }
 
 };
 
