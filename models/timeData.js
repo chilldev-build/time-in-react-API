@@ -83,6 +83,20 @@ class Time {
     }
   }
 
+  static async getPeriods(e_id) {
+    try {
+      const response = await db.any(
+        `
+        SELECT period_begin, period_end FROM calendar WHERE co_cid = (SELECT co_cid FROM employee WHERE id = $1) ORDER BY period_end;`,
+        [e_id]
+      );
+      console.log(response);
+      return response;
+    } catch (err) {
+      return err.message;
+    }
+  }
+
 };
 
 

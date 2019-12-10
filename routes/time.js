@@ -32,6 +32,13 @@ router.get("/:ee_id?", async (req, res) => {
   res.json(theTime).status(200);
 });
 
+// Read Time
+router.get("/periods/:ee_id?", async (req, res) => {
+  const eeId = req.params.ee_id;
+  const thePeriods = await TimeModel.getPeriods(eeId);
+  res.json(thePeriods).status(200);
+});
+
 // Read Years from calendar
 router.get("/years/:ee_id?", async (req, res) => {
   const eeId = req.params.ee_id;
